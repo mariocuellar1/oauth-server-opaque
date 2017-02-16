@@ -84,6 +84,7 @@ public class AuthserverApplication extends WebMvcConfigurerAdapter {
             DefaultTokenServices tokenServices = new DefaultTokenServices();
             tokenServices.setTokenStore(oAuth2RepositoryTokenStore);
             tokenServices.setClientDetailsService(appClientsUserDetailsService);
+            tokenServices.setSupportRefreshToken(true);
             //Set timeouts
             tokenServices.setAccessTokenValiditySeconds(60 * 60 * 48 /* 48 hours */);
             tokenServices.setRefreshTokenValiditySeconds(60 * 60 * 24 * 30 * 12 /* 1 year */);
