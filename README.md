@@ -74,7 +74,17 @@ Remember this projects only provide Authorization Server, not resource server or
    https://www.digitalocean.com/community/tutorials/an-introduction-to-oauth-2
    
    ```
+All this test have to provide an access token, and some of them a refresh token.
+
+* To test access token: Using "Token - checktoken" test in postman change body parameter *token* using the token to test in response you will get client and/or user information in token. This method will be use by Resource servers.
+
+* To renew your token using a refresh token: Using "Token - refresh_token" test in postman change body parameter *refresh_token* using the refresh token get above.
+
    
-   
+And you Done !!!!
+
+Notes:
+
+
    
    
