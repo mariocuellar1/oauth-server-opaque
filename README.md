@@ -46,7 +46,7 @@ Remember this projects only provide Authorization Server, not resource server or
     }
     ```
 5. Import postman project *OpaqueOauthServerAndResourceTest.postman_collection.json* to postman
-   * To test Grant Type: Client Credentials (client_credetials)
+   * To test Grant Type: Client Credentials (client_credentials)
    ```
    Use test "Token - client_credentials" just press "Send". 
    If you change client_id/client_secret in your database, 
@@ -63,7 +63,7 @@ Remember this projects only provide Authorization Server, not resource server or
    * To test Grant Type: Authorization Code (authorization_code)
    ```
    This flow it's a little more complicated to test:
-   1. Copy URL in "Autorize" test in postman and use it in a browser. Change if needed host or server port.
+   1. Copy URL in "Authorize" test in postman and use it in a browser. Change if needed host or server port.
    2. Provide user and password.
    3. Approve scopes
    4. You get a 404 Status code, this is because we not provide a valid "redirect_uri", 
@@ -84,7 +84,13 @@ All this test have to provide an access token, and some of them a refresh token.
 And you Done !!!!
 
 Notes:
+- I use postman to test 'cause it's what I usually do :) , if you want, modify this readme adding other ways, CURL, junit, simple java ó whatever.
+- Please feel free to add/modify/correct/update any part of its content as necessary
 
+Other Projects:
+- Basic Resource Server using oauth and opaque token https://github.com/mariocuellar1/basic-resource-server-opaque
+- oAuth Server using JWT Token https://github.com/mariocuellar1/oauth-server-jwt
+- Basic Resource Server validating JWT Token https://github.com/mariocuellar1/basic-resource-server-jwt
 
    
    
