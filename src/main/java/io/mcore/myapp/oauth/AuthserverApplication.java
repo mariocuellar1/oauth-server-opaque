@@ -1,6 +1,7 @@
 package io.mcore.myapp.oauth;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -62,6 +63,12 @@ public class AuthserverApplication extends WebMvcConfigurerAdapter {
 	@EnableAuthorizationServer
 	protected static class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 
+		@Value("${myapp.accesstoken.validity}")
+		private int accessTokenValiditySeconds;
+
+		@Value("${myapp.refreshtoken.validity}")
+		private int refreshTokenValiditySeconds;
+
 		@Autowired
 		private AuthenticationManager authenticationManager;
 
@@ -78,23 +85,22 @@ public class AuthserverApplication extends WebMvcConfigurerAdapter {
 
 		@Autowired
 		MongoDbTokenStore oAuth2RepositoryTokenStore;
-		
+
 		@Bean
-        public AuthorizationServerTokenServices customTokenServices() {
-            DefaultTokenServices tokenServices = new DefaultTokenServices();
-            tokenServices.setTokenStore(oAuth2RepositoryTokenStore);
-            tokenServices.setClientDetailsService(appClientsUserDetailsService);
-            tokenServices.setSupportRefreshToken(true);
-            //Set timeouts
-            tokenServices.setAccessTokenValiditySeconds(60 * 60 * 48 /* 48 hours */);
-            tokenServices.setRefreshTokenValiditySeconds(60 * 60 * 24 * 30 * 12 /* 1 year */);
-            return tokenServices;
-        }
+		public AuthorizationServerTokenServices customTokenServices() {
+			DefaultTokenServices tokenServices = new DefaultTokenServices();
+			tokenServices.setTokenStore(oAuth2RepositoryTokenStore);
+			tokenServices.setClientDetailsService(appClientsUserDetailsService);
+			tokenServices.setSupportRefreshToken(true);
+			tokenServices.setAccessTokenValiditySeconds(accessTokenValiditySeconds);
+			tokenServices.setRefreshTokenValiditySeconds(refreshTokenValiditySeconds);
+			return tokenServices;
+		}
 
 		@Override
 		public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
 			endpoints.authenticationManager(authenticationManager).userDetailsService(userDetailsService)
-			.tokenServices(customTokenServices());
+					.tokenServices(customTokenServices());
 		}
 
 		@Override
@@ -113,14 +119,6 @@ public class AuthserverApplication extends WebMvcConfigurerAdapter {
 
 		@Override
 		public ClientDetails loadClientByClientId(String clientId) throws ClientRegistrationException {
-			/*
-			 * AppClient client2 = new AppClient(); client2.clientId = "acme";
-			 * client2.clientSecret = new
-			 * BCryptPasswordEncoder().encode("acmesecret"); client2.grantTypes
-			 * = "client_credentials,password,refresh_token,authorization_code";
-			 * client2.scopes = "read,write";
-			 * appClientsRepository.save(client2);
-			 */
 			AppClient client = appClientsRepository.findByClientId(clientId);
 			BaseClientDetails clientDetails = new BaseClientDetails();
 			clientDetails.setClientId(client.clientId);
@@ -140,11 +138,6 @@ public class AuthserverApplication extends WebMvcConfigurerAdapter {
 
 		@Override
 		public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-			/*
-			 * AppUser user2 = new AppUser(); user2.userName = "user1";
-			 * user2.password = new BCryptPasswordEncoder().encode("password1");
-			 * user2.roles = "ADMIN,USER"; userRepository.save(user2);
-			 */
 			AppUser user = userRepository.findByUserName(username);
 			if (user == null) {
 				throw new UsernameNotFoundException(username);
